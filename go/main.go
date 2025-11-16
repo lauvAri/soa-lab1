@@ -1,8 +1,11 @@
 package main
 
 import (
+    "materials-service/internal/model"
+    "materials-service/internal/config"
     "net/http"
     "github.com/gin-gonic/gin"
+    "fmt"
 )
 
 // 定义物资结构体
@@ -19,6 +22,17 @@ var materials = []Material{
 }
 
 func main() {
+    config.LoadEnv()
+    // 初始化数据库
+	if err := model.InitDB(); err != nil {
+		fmt.Println("数据库初始化失败: %v", err)
+	}
+	defer func() {
+		if db, _ := model.DB.DB(); db != nil {
+			_ = db.Close()
+		}
+	}()
+
     r := gin.Default()
 
     // 获取所有物资
