@@ -33,6 +33,19 @@ public class UserController {
     }
 
     /**
+     * 根据角色ID获取用户列表
+     * GET /users/role/{roleId}
+     * 注意：这个路径必须放在 /users/{id} 之前，避免路径冲突
+     * @param roleId 角色ID
+     * @return 用户列表
+     */
+    @GetMapping("/role/{roleId}")
+    public ResponseEntity<ResponseResult<List<User>>> getUsersByRoleId(@PathVariable Long roleId) {
+        List<User> users = userService.getUsersByRoleId(roleId);
+        return ResponseEntity.ok(ResponseResult.success(users));
+    }
+
+    /**
      * 根据ID获取用户
      * GET /users/{id}
      * @param id 用户ID
@@ -102,17 +115,5 @@ public class UserController {
     public ResponseEntity<ResponseResult<Object>> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok(ResponseResult.success("用户删除成功"));
-    }
-
-    /**
-     * 根据角色ID获取用户列表
-     * GET /users/role/{roleId}
-     * @param roleId 角色ID
-     * @return 用户列表
-     */
-    @GetMapping("/role/{roleId}")
-    public ResponseEntity<ResponseResult<List<User>>> getUsersByRoleId(@PathVariable Long roleId) {
-        List<User> users = userService.getUsersByRoleId(roleId);
-        return ResponseEntity.ok(ResponseResult.success(users));
     }
 }

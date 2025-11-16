@@ -21,7 +21,8 @@
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
         <!-- 关联角色对象 -->
-        <association property="role" javaType="com.example.demo.entity.Role">
+        <association property="role" javaType="com.example.demo.entity.Role" 
+                     notNullColumn="role_table_id">
             <id property="id" column="role_table_id"/>
             <result property="roleName" column="role_name"/>
             <result property="description" column="role_description"/>
@@ -51,7 +52,7 @@
             r.created_at AS role_created_at,
             r.updated_at AS role_updated_at
         FROM users u
-        INNER JOIN roles r ON u.role_id = r.id
+        LEFT JOIN roles r ON u.role_id = r.id
         ORDER BY u.id
     </select>
 
@@ -76,16 +77,27 @@
             r.created_at AS role_created_at,
             r.updated_at AS role_updated_at
         FROM users u
-        INNER JOIN roles r ON u.role_id = r.id
+        LEFT JOIN roles r ON u.role_id = r.id
         WHERE u.id = #{id}
     </select>
 
-    <!-- 根据角色ID查询用户列表 -->
-    <select id="findByRoleId" resultMap="UserResultMap">
-        SELECT id, name, role_id, created_at, updated_at
-        FROM users
-        WHERE role_id = #{roleId}
-        ORDER BY id
+    <!-- 根据角色ID查询用户列表（包含角色信息） -->
+    <select id="findByRoleId" resultMap="UserWithRoleResultMap">
+        SELECT 
+            u.id,
+            u.name,
+            u.role_id,
+            u.created_at,
+            u.updated_at,
+            r.id AS role_table_id,
+            r.role_name,
+            r.description AS role_description,
+            r.created_at AS role_created_at,
+            r.updated_at AS role_updated_at
+        FROM users u
+        LEFT JOIN roles r ON u.role_id = r.id
+        WHERE u.role_id = #{roleId}
+        ORDER BY u.id
     </select>
 
     <!-- 插入用户 -->

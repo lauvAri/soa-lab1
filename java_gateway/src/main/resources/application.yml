@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        # 用户服务路由 - 自动转发所有 /api/users/** 到用户服务
+        # 注意：Path=/api/users/** 会匹配 /api/users 和 /api/users/** 
+        - id: user-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/users,/api/users/**
+          filters:
+            - StripPrefix=1  # 去掉 /api 前缀，转发到 /users 或 /users/**
+        
+        # 物资服务路由 (Go) - 自动转发所有 /api/materials/** 到物资服务
+        - id: material-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/materials/**
+          filters:
+            - StripPrefix=1  # 去掉 /api 前缀，转发到 /materials/**
+        
+        # 借阅服务路由 (Python) - 自动转发所有 /api/borrows/** 到借阅服务
+        - id: borrow-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/borrows/**
+          filters:
+            - StripPrefix=1  # 去掉 /api 前缀，转发到 /borrows/**
+      
+      # 全局 CORS 配置
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"  # 使用 allowedOriginPatterns 而不是 allowedOrigins，以支持 allowCredentials
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+
+server:
+  port: 8080
+
+# 微服务地址配置（用于聚合接口）
+gateway:
+  service:
+    user: http://localhost:8083
+    material: http://localhost:8082
+    borrow: http://localhost:8081
+
+# 日志配置
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
