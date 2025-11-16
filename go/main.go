@@ -3,6 +3,8 @@ package main
 import (
     "materials-service/internal/model"
     "materials-service/internal/config"
+    "materials-service/internal/dao"
+    "materials-service/routers"
     "net/http"
     "github.com/gin-gonic/gin"
     "fmt"
@@ -21,6 +23,11 @@ var materials = []Material{
     {ID: "2", Name: "示波器", Type: "电子仪器"},
 }
 
+//测试数据
+var testType = []model.MaterialType{
+    {ID: 1, Name: "Mac"},
+}
+
 func main() {
     config.LoadEnv()
     // 初始化数据库
@@ -33,23 +40,9 @@ func main() {
 		}
 	}()
 
-    r := gin.Default()
+    dao.CreateMaterialType(&testType[0])
 
-    // 获取所有物资
-    r.GET("/materials", func(c *gin.Context) {
-        c.JSON(http.StatusOK, materials)
-    })
-
-    // 添加物资 (简化版，未做持久化)
-    r.POST("/materials", func(c *gin.Context) {
-        var newMat Material
-        if err := c.ShouldBindJSON(&newMat); err == nil {
-            materials = append(materials, newMat)
-            c.JSON(http.StatusCreated, newMat)
-        } else {
-            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        }
-    })
+    r := routers.setupRouter(&model.DB)
 
     // 运行在 8082 端口
     r.Run(":8082")
