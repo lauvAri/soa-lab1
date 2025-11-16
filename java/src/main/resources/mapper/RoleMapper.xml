@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.RoleMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="RoleResultMap" type="com.example.demo.entity.Role">
+        <id property="id" column="id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="description" column="description"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 查询所有角色 -->
+    <select id="findAll" resultMap="RoleResultMap">
+        SELECT id, role_name, description, created_at, updated_at
+        FROM roles
+        ORDER BY id
+    </select>
+
+    <!-- 根据ID查询角色 -->
+    <select id="findById" resultMap="RoleResultMap">
+        SELECT id, role_name, description, created_at, updated_at
+        FROM roles
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据角色名称查询角色 -->
+    <select id="findByRoleName" resultMap="RoleResultMap">
+        SELECT id, role_name, description, created_at, updated_at
+        FROM roles
+        WHERE role_name = #{roleName}
+    </select>
+
+    <!-- 插入角色 -->
+    <insert id="insert" parameterType="com.example.demo.entity.Role" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO roles (role_name, description, created_at, updated_at)
+        VALUES (#{roleName}, #{description}, NOW(), NOW())
+    </insert>
+
+    <!-- 更新角色 -->
+    <update id="update" parameterType="com.example.demo.entity.Role">
+        UPDATE roles
+        SET role_name = #{roleName},
+            description = #{description},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID删除角色 -->
+    <delete id="deleteById">
+        DELETE FROM roles
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
+
