@@ -1,0 +1,163 @@
+# HELP.md
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Maven ###
+.mvn/
+mvnw
+mvnw.cmd
+*.tar.gz
+*.war
+*.ear
+
+### Gradle ###
+.gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+**/gradle/wrapper/gradle-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### ========================
+### Spring Boot 特定配置
+### ========================
+
+# Spring Boot 日志文件
+logs/
+*.log
+log/
+logging/
+
+# Spring Boot 配置
+application-local.properties
+application-local.yml
+application-dev.properties
+application-dev.yml
+application-test.properties
+application-test.yml
+*.local.*
+
+# Spring Boot Actuator
+/heapdump*
+/*.hprof
+
+# 热部署开发工具
+spring-boot-devtools.properties
+
+### ========================
+### 数据库和缓存
+### ========================
+
+# H2 数据库
+*.mv.db
+*.trace.db
+
+# HSQLDB
+*.data
+*.script
+
+# 嵌入式数据库
+*.db
+*.sqlite
+*.h2.db
+
+# Redis
+dump.rdb
+
+### ========================
+### 依赖和包管理
+### ========================
+
+# 依赖锁文件（如果使用 Gradle）
+gradle/dependencies.lock
+
+# Maven 包装器日志
+.mvn/wrapper/maven-wrapper.properties
+
+### ========================
+### 测试和覆盖率
+### ========================
+
+# 测试报告
+test-output/
+reports/
+*.emma
+
+# JaCoCo 代码覆盖率
+jacoco.exec
+jacoco.xml
+*.exec
+
+### ========================
+### 操作系统文件
+### ========================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+### ========================
+### 应用特定文件
+### ========================
+
+# 上传文件目录
+uploads/
+static/uploads/
+tmp/
+
+# 生成的文档
+/docs/generated/
+
+# 临时文件
+*.tmp
+*.temp
+
+### ========================
+### Docker 和容器化
+### ========================
+
+# Docker
+Dockerfile.dev
+docker-compose.override.yml
+
+# 容器构建缓存
+.container-*
