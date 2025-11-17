@@ -3,12 +3,12 @@ package routers
 import (
 	"materials-service/internal/controller"
 	"materials-service/internal/dao"
-	"materials-service/internal/model"
+	//"materials-service/internal/model"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func setupRouter(db *gorm.DB) *gin.Engine {
+func SetupRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
 	// 初始化DAO
@@ -20,11 +20,11 @@ func setupRouter(db *gorm.DB) *gin.Engine {
 	// 路由组
 	api := r.Group("/api/v1")
 	{
-		api.POST("/material-types", mtController.CreateMaterialType)
-		api.GET("/material-types", mtController.ListMaterialTypes)
-		api.GET("/material-types/:id", mtController.GetMaterialType)
-		api.PUT("/material-types/:id", mtController.UpdateMaterialType)
-		api.DELETE("/material-types/:id", mtController.DeleteMaterialType)
+		api.POST("/materials/types", mtController.CreateMaterialType)
+		api.GET("/materials/types", mtController.ListMaterialTypes)
+		api.GET("/materials/types/:id", mtController.GetMaterialType)
+		api.PUT("/materials/types/:id", mtController.UpdateMaterialType)
+		api.DELETE("/materials/types/:id", mtController.DeleteMaterialType)
 	}
 
 	return r

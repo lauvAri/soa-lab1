@@ -3,10 +3,10 @@ package main
 import (
     "materials-service/internal/model"
     "materials-service/internal/config"
-    "materials-service/internal/dao"
+    //"materials-service/internal/dao"
     "materials-service/routers"
-    "net/http"
-    "github.com/gin-gonic/gin"
+    //"net/http"
+    //"github.com/gin-gonic/gin"
     "fmt"
 )
 
@@ -40,9 +40,9 @@ func main() {
 		}
 	}()
 
-    dao.CreateMaterialType(&testType[0])
+    //dao.CreateMaterialType(&testType[0])
 
-    r := routers.setupRouter(&model.DB)
+    r := routers.SetupRouter(model.DB)
 
     // 运行在 8082 端口
     r.Run(":8082")
