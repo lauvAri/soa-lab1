@@ -1,12 +1,13 @@
 package controller
 
 import (
-	"materials-service/internal/model"
-	"materials-service/internal/dao"
-	//"materials-service/internal/service"
 	"net/http"
 	"strconv"
+
 	"github.com/gin-gonic/gin"
+
+	"materials-service/internal/dao"
+	"materials-service/internal/model"
 )
 
 type MaterialTypeController struct {
@@ -155,4 +156,17 @@ func (c *MaterialTypeController) DeleteMaterialType(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusNoContent)
+}
+
+// RegisterMaterialTypeRoutes 将材料类型路由注册到 gin.IRouter
+func RegisterMaterialTypeRoutes(r gin.IRouter, dao *dao.MaterialTypeDAO) {
+	c := NewMaterialTypeController(dao)
+	g := r.Group("/materials/types")
+	{
+		g.POST("", c.CreateMaterialType)
+		g.GET("", c.ListMaterialTypes)
+		g.GET("/:id", c.GetMaterialType)
+		g.PUT("/:id", c.UpdateMaterialType)
+		g.DELETE("/:id", c.DeleteMaterialType)
+	}
 }
