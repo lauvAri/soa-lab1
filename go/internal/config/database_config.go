@@ -1,22 +1,36 @@
 package config
 
 import (
-	"os"
-	"github.com/joho/godotenv"
 	"fmt"
+	"os"
+
+	"github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
 func LoadEnv() {
-	err := godotenv.Load(".env") // 从 .env 文件加载配置
-	if err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		fmt.Println("无法加载 .env 文件")
 	}
 }
 
 func GetDSN() string {
-	msg := os.Getenv("DB_DSN") 
+	raw := os.Getenv("DB_DSN")
+	if raw == "" {
+		return raw
+	}
 
-	fmt.Println("DB_DSN:",msg)
-
-	return os.Getenv("DB_DSN") 
+	cfg, err := mysql.ParseDSN(raw)
+	if err != nil {
+		fmt.Println("解析 DSN 失败，使用原始字符串:", err)
+		return raw
+	}
+	cfg.ParseTime = true
+	if cfg.Params == nil {
+		cfg.Params = map[string]string{}
+	}
+	if _, ok := cfg.Params["charset"]; !ok {
+		cfg.Params["charset"] = "utf8mb4"
+	}
+	return cfg.FormatDSN()
 }

@@ -53,3 +53,19 @@ func (s *MaterialService) List(ctx context.Context, page, pageSize int) ([]model
 	offset := (page - 1) * pageSize
 	return dao.ListMaterials(ctx, offset, pageSize)
 }
+
+// Stats 返回物资统计信息
+func (s *MaterialService) Stats(ctx context.Context) (*model.MaterialStats, error) {
+	statsByType, err := dao.GetMaterialStats(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var availableTotal int64
+	for _, item := range statsByType {
+		availableTotal += item.AvailableCount
+	}
+	return &model.MaterialStats{
+		ByType:         statsByType,
+		AvailableTotal: availableTotal,
+	}, nil
+}

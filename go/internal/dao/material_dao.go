@@ -2,6 +2,9 @@ package dao
 
 import (
 	"context"
+
+	"gorm.io/gorm"
+
 	"materials-service/internal/model"
 )
 
@@ -29,7 +32,14 @@ func UpdateMaterial(ctx context.Context, m *model.Material) error {
 
 // DeleteMaterial 根据主键删除
 func DeleteMaterial(ctx context.Context, id int64) error {
-	return model.DB.WithContext(ctx).Delete(&model.Material{}, "material_id = ?", id).Error
+	result := model.DB.WithContext(ctx).Delete(&model.Material{}, "material_id = ?", id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
 }
 
 // ListMaterials 分页查询物资列表，返回列表与总数
@@ -54,4 +64,20 @@ func ListMaterials(ctx context.Context, offset, limit int) ([]model.Material, in
 		return nil, 0, err
 	}
 	return items, total, nil
+}
+
+// GetMaterialStats 统计每个分类的物资数量及可用数量
+func GetMaterialStats(ctx context.Context) ([]model.MaterialStatsByType, error) {
+	var stats []model.MaterialStatsByType
+	err := model.DB.WithContext(ctx).
+		Table("material_type AS mt").
+		Select(`
+			mt.material_type_id,
+			mt.material_type_name,
+			COUNT(mi.material_id) AS total_count,
+			COALESCE(SUM(CASE WHEN mi.material_status = 0 THEN 1 ELSE 0 END), 0) AS available_count`).
+		Joins("LEFT JOIN materials_info mi ON mi.material_type_id = mt.material_type_id").
+		Group("mt.material_type_id, mt.material_type_name").
+		Find(&stats).Error
+	return stats, err
 }

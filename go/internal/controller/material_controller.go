@@ -28,6 +28,7 @@ func RegisterMaterialRoutes(r gin.IRouter) {
 		// 兼容带/不带尾随斜杠
 		g.GET("", c.list)
 		g.GET("/", c.list)
+		g.GET("/stats", c.stats)
 		g.GET("/:id", c.get)
 		g.POST("", c.create)
 		g.POST("/", c.create)
@@ -130,6 +131,16 @@ func (mc *MaterialController) list(c *gin.Context) {
 		"pageSize": pageSize,
 		"ts":       time.Now().UTC(),
 	})
+}
+
+// stats 返回物资统计信息
+func (mc *MaterialController) stats(c *gin.Context) {
+	stats, err := mc.svc.Stats(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, stats)
 }
 
 // 工具函数
