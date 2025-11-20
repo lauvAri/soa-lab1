@@ -1,28 +1,21 @@
+# User Service
+
+## 启动方式
+
 ```bash
-mvn spring-boot:run
+cd java
+./mvnw clean spring-boot:run -U
 ```
 
-正常启动输出如下：
+- 必须在 `java` 目录下运行，否则 Maven 找不到 `spring-boot` 插件。
+- 使用 `-U` 可以强制更新依赖，确保使用当前项目锁定的 Spring Boot `3.3.5` 与 SpringDoc 版本，避免出现 `ControllerAdviceBean.<init>(Object)` 的兼容性异常。
+- 应用默认运行在 `http://localhost:8083`，数据库连接、端口等可在 `src/main/resources/application.yml` 中调整。
 
-```
+## Swagger / OpenAPI 文档
 
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
+应用集成了 SpringDoc OpenAPI，启动后即可在浏览器中访问：
 
- :: Spring Boot ::                (v3.5.7)
+- Swagger UI：<http://localhost:8083/swagger-ui/index.html>
+- OpenAPI JSON：<http://localhost:8083/v3/api-docs>
 
-2025-11-16T17:15:59.951+08:00  INFO 12716 --- [demo] [           main] com.example.demo.DemoApplication         : Starting DemoApplication using Java 21.0.5 with PID 12716 (D:\test\java\target\classes started by 19871 in D:\test\java)
-2025-11-16T17:16:01.089+08:00  INFO 12716 --- [demo] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-11-16T17:16:01.089+08:00  INFO 12716 --- [demo] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
-2025-11-16T17:16:01.191+08:00  INFO 12716 --- [demo] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-11-16T17:16:01.193+08:00  INFO 12716 --- [demo] [           main] w.s.c.ServletWebServerApplicationCoe: [Apache Tomcat/10ee: [Apache Tomcat/10.1.48]
-2025-11-16T17:16:01.191+08:00  INFO 12716 --- [demo] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-11-16T17:16:01.193+08:00  INFO 12716 --- [demo] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1182 ms
-2025-11-16T17:16:01.645+08:00  INFO 12716 --- [demo] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-11-16T17:16:01.657+08:00  INFO 12716 --- [demo] [           main] com.example.demo.DemoApplication         : Started DemoApplication in 2.247 seconds (process running for 2.652)
-2025-11-16T17:17:24.664+08:00  INFO 12716 --- [demo] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-```
+若 Swagger UI 出现 `Fetch error`，通常是 `/v3/api-docs` 返回 500。清理本地 Maven 缓存中旧的 Spring Framework 6.2 依赖（例如 `~/.m2/repository/org/springframework`），或执行 `./mvnw dependency:purge-local-repository`，重新启动即可恢复。

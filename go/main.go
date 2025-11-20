@@ -3,10 +3,10 @@ package main
 import (
     "materials-service/internal/model"
     "materials-service/internal/config"
-    //"materials-service/internal/dao"
     "materials-service/routers"
-    //"net/http"
-    //"github.com/gin-gonic/gin"
+    swaggerFiles "github.com/swaggo/files"
+    ginSwagger "github.com/swaggo/gin-swagger"
+    _ "materials-service/docs"
     "fmt"
 )
 
@@ -43,6 +43,7 @@ func main() {
     //dao.CreateMaterialType(&testType[0])
 
     r := routers.SetupRouter(model.DB)
+    r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
     // 运行在 8082 端口
     r.Run(":8082")

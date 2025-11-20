@@ -10,10 +10,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /**
  * 用户控制器
  * 提供用户管理的REST API接口
  */
+@Tag(name = "用户管理", description = "提供用户查询、角色筛选、增删改等接口")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -26,6 +31,7 @@ public class UserController {
      * GET /users
      * @return 用户列表（包含角色信息）
      */
+    @Operation(summary = "获取全部用户", description = "返回所有用户以及关联的角色信息")
     @GetMapping
     public ResponseEntity<ResponseResult<List<User>>> getAllUsers() {
         List<User> users = userService.getAllUsers();
@@ -39,8 +45,11 @@ public class UserController {
      * @param roleId 角色ID
      * @return 用户列表
      */
+    @Operation(summary = "按角色查询用户", description = "根据角色ID获取所属用户列表")
     @GetMapping("/role/{roleId}")
-    public ResponseEntity<ResponseResult<List<User>>> getUsersByRoleId(@PathVariable Long roleId) {
+    public ResponseEntity<ResponseResult<List<User>>> getUsersByRoleId(
+            @Parameter(description = "角色ID", example = "1001")
+            @PathVariable Long roleId) {
         List<User> users = userService.getUsersByRoleId(roleId);
         return ResponseEntity.ok(ResponseResult.success(users));
     }
@@ -51,8 +60,11 @@ public class UserController {
      * @param id 用户ID
      * @return 用户对象（包含角色信息）
      */
+    @Operation(summary = "根据ID获取用户", description = "根据用户ID返回其详情及角色")
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseResult<User>> getUserById(@PathVariable Long id) {
+    public ResponseEntity<ResponseResult<User>> getUserById(
+            @Parameter(description = "用户ID", example = "1")
+            @PathVariable Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(ResponseResult.success(user));
     }
@@ -63,8 +75,12 @@ public class UserController {
      * @param user 用户对象（需要name和roleId）
      * @return 创建的用户对象（包含角色信息）
      */
+    @Operation(summary = "创建用户", description = "根据姓名与角色ID创建新用户")
     @PostMapping
-    public ResponseEntity<ResponseResult<User>> createUser(@RequestBody User user) {
+    public ResponseEntity<ResponseResult<User>> createUser(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "待创建的用户信息", required = true)
+            @RequestBody User user) {
         // 验证必填字段
         if (user.getName() == null || user.getName().trim().isEmpty()) {
             return ResponseEntity.badRequest()
@@ -87,9 +103,13 @@ public class UserController {
      * @param user 用户对象（需要name和roleId）
      * @return 更新后的用户对象（包含角色信息）
      */
+    @Operation(summary = "更新用户", description = "根据ID修改用户姓名与角色信息")
     @PutMapping("/{id}")
     public ResponseEntity<ResponseResult<User>> updateUser(
+            @Parameter(description = "用户ID", example = "1")
             @PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "新的用户信息", required = true)
             @RequestBody User user) {
         // 验证必填字段
         if (user.getName() == null || user.getName().trim().isEmpty()) {
@@ -111,8 +131,11 @@ public class UserController {
      * @param id 用户ID
      * @return 删除结果
      */
+    @Operation(summary = "删除用户", description = "根据用户ID删除用户")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseResult<Object>> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<ResponseResult<Object>> deleteUser(
+            @Parameter(description = "用户ID", example = "1")
+            @PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok(ResponseResult.success("用户删除成功"));
     }

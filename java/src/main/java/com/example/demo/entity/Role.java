@@ -2,34 +2,42 @@ package com.example.demo.entity;
 
 import java.time.LocalDateTime;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 角色实体类
  * 对应数据库表：roles
  */
+@Schema(name = "Role", description = "角色信息")
 public class Role {
     /**
      * 角色ID
      */
+    @Schema(description = "角色主键ID", example = "1001")
     private Long id;
 
     /**
      * 角色名称
      */
+    @Schema(description = "角色名称", example = "管理员")
     private String roleName;
 
     /**
      * 角色描述
      */
+    @Schema(description = "角色描述", example = "拥有系统管理权限")
     private String description;
 
     /**
      * 创建时间
      */
+    @Schema(description = "创建时间")
     private LocalDateTime createdAt;
 
     /**
      * 更新时间
      */
+    @Schema(description = "最近更新时间")
     private LocalDateTime updatedAt;
 
     // 无参构造函数
