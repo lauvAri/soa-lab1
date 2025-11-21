@@ -20,6 +20,8 @@ spring:
             - Path=/api/materials/**
           filters:
             - StripPrefix=1  # 去掉 /api 前缀，转发到 /materials/**
+            - PrefixPath=/api/v1 # 加上/api/v1
+            # 这样过滤之后请求/api/materials/*就转发到/api/v1/materials
         
         # 借阅服务路由 (Python) - 自动转发所有 /api/borrows/** 到借阅服务
         - id: borrow-service
