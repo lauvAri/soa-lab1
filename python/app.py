@@ -1,26 +1,56 @@
-from flask import Flask, jsonify, request
+from flask import Flask
+from flask_cors import CORS
+from config import Config
+from models import db
+from routes_borrows import borrows_bp
 
+# 创建 Flask 应用
 app = Flask(__name__)
 
-# 模拟数据库
-borrows = [
-    {"id": 1, "user_id": 101, "material_id": "1", "date": "2024-11-14"},
-    {"id": 2, "user_id": 102, "material_id": "2", "date": "2024-11-15"},
-]
+# 加载配置
+app.config.from_object(Config)
+
+# 启用 CORS
+CORS(app)
+
+# 初始化数据库
+db.init_app(app)
+
+# 注册蓝图
+app.register_blueprint(borrows_bp)
 
 
-@app.route("/borrows", methods=["GET"])
-def get_borrows():
-    return jsonify(borrows)
+@app.route('/')
+def index():
+    """服务健康检查接口"""
+    return {
+        'code': 200,
+        'message': 'Borrow Service is running',
+        'service': 'borrow-service',
+        'version': '1.0.0',
+        'port': Config.PORT
+    }
 
 
-@app.route("/borrows", methods=["POST"])
-def add_borrow():
-    new_borrow = request.get_json()
-    borrows.append(new_borrow)
-    return jsonify(new_borrow), 201
+@app.route('/health')
+def health():
+    """健康检查接口"""
+    return {
+        'status': 'healthy',
+        'service': 'borrow-service'
+    }
 
 
-if __name__ == "__main__":
-    # 运行在 8081 端口
-    app.run(port=8081, debug=True)
+# 创建数据库表
+with app.app_context():
+    db.create_all()
+    print("数据库表创建成功!")
+
+
+if __name__ == '__main__':
+    print(f"借用记录服务启动中...")
+    print(f"监听地址: {Config.HOST}:{Config.PORT}")
+    print(f"数据库: {Config.SQLALCHEMY_DATABASE_URI}")
+    print(f"用户服务: {Config.USER_SERVICE_BASE_URL}")
+    print(f"物资服务: {Config.MATERIAL_SERVICE_BASE_URL}")
+    app.run(host=Config.HOST, port=Config.PORT, debug=Config.DEBUG)
