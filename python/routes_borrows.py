@@ -21,7 +21,38 @@ material_client = MaterialClient()
 def create_borrow():
     """
     创建借用记录（借出）
-    POST /borrows
+    ---
+    tags:
+      - Borrows
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/BorrowCreateRequest'
+    responses:
+      201:
+        description: 创建成功
+        schema:
+          $ref: '#/definitions/BorrowRecordResponse'
+      400:
+        description: 请求体或参数不合法
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      404:
+        description: 用户或物资不存在
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      409:
+        description: 物资状态冲突
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      500:
+        description: 服务内部错误
+        schema:
+          $ref: '#/definitions/SimpleResponse'
     """
     try:
         # 获取请求数据
@@ -111,7 +142,50 @@ def create_borrow():
 def list_borrows():
     """
     查询借用列表（支持过滤和分页）
-    GET /borrows?userId=1&materialId=1001&status=0&page=1&pageSize=10&include=user,material
+    ---
+    tags:
+      - Borrows
+    parameters:
+      - name: userId
+        in: query
+        type: integer
+        required: false
+        description: 用户ID
+      - name: materialId
+        in: query
+        type: integer
+        required: false
+        description: 物资ID
+      - name: status
+        in: query
+        type: integer
+        enum: [0, 1, 2]
+        description: 借用状态
+      - name: page
+        in: query
+        type: integer
+        description: 页码，默认 1
+      - name: pageSize
+        in: query
+        type: integer
+        description: 单页数量，默认 10
+      - name: include
+        in: query
+        type: string
+        description: 包含额外信息，逗号分隔支持 user,material
+    responses:
+      200:
+        description: 借用记录列表
+        schema:
+          $ref: '#/definitions/BorrowListResponse'
+      400:
+        description: 请求参数错误
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      500:
+        description: 服务内部错误
+        schema:
+          $ref: '#/definitions/SimpleResponse'
     """
     try:
         # 获取查询参数
@@ -195,7 +269,33 @@ def list_borrows():
 def get_borrow(id):
     """
     查询单条借用记录
-    GET /borrows/{id}
+    ---
+    tags:
+      - Borrows
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+        description: 借用记录ID
+      - name: include
+        in: query
+        type: string
+        required: false
+        description: 包含额外信息，逗号分隔支持 user,material
+    responses:
+      200:
+        description: 借用记录详情
+        schema:
+          $ref: '#/definitions/BorrowRecordResponse'
+      404:
+        description: 记录不存在
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      500:
+        description: 服务内部错误
+        schema:
+          $ref: '#/definitions/SimpleResponse'
     """
     try:
         # 查询记录
@@ -240,7 +340,42 @@ def get_borrow(id):
 def update_borrow(id):
     """
     更新借用记录（包括归还）
-    PUT /borrows/{id}
+    ---
+    tags:
+      - Borrows
+    consumes:
+      - application/json
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+        description: 借用记录ID
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/BorrowUpdateRequest'
+    responses:
+      200:
+        description: 更新成功
+        schema:
+          $ref: '#/definitions/BorrowRecordResponse'
+      400:
+        description: 参数错误
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      404:
+        description: 记录不存在
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      409:
+        description: 状态冲突
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      500:
+        description: 服务内部错误
+        schema:
+          $ref: '#/definitions/SimpleResponse'
     """
     try:
         # 查询记录
@@ -313,7 +448,42 @@ def update_borrow(id):
 def return_borrow(id):
     """
     归还操作专用接口
-    POST /borrows/{id}/return
+    ---
+    tags:
+      - Borrows
+    consumes:
+      - application/json
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+        description: 借用记录ID
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/BorrowReturnRequest'
+    responses:
+      200:
+        description: 归还成功
+        schema:
+          $ref: '#/definitions/BorrowRecordResponse'
+      400:
+        description: 参数错误
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      404:
+        description: 记录不存在
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      409:
+        description: 状态冲突
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      500:
+        description: 服务内部错误
+        schema:
+          $ref: '#/definitions/SimpleResponse'
     """
     try:
         # 查询记录
@@ -369,7 +539,28 @@ def return_borrow(id):
 def delete_borrow(id):
     """
     删除借用记录
-    DELETE /borrows/{id}
+    ---
+    tags:
+      - Borrows
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+        description: 借用记录ID
+    responses:
+      200:
+        description: 删除成功
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      404:
+        description: 记录不存在
+        schema:
+          $ref: '#/definitions/SimpleResponse'
+      500:
+        description: 服务内部错误
+        schema:
+          $ref: '#/definitions/SimpleResponse'
     """
     try:
         # 查询记录

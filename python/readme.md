@@ -97,6 +97,12 @@ Press CTRL+C to quit
 
 ## API 接口说明
 
+### Swagger 在线文档
+
+- 启动服务后访问 `http://localhost:8081/apidocs` 查看自动生成的 Swagger UI
+- 文档基于 [Flasgger](https://github.com/flasgger/flasgger)，会展示接口请求参数、响应结构、示例等
+- 在 Swagger UI 中可以直接发起请求（需确保后台服务及依赖服务均可访问）
+
 ### 健康检查
 
 - `GET /` - 服务信息
